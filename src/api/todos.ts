@@ -18,7 +18,5 @@ export const createTodo = (title: string) => {
     completed: false,
   };
 
-  // Використовуємо метод 'post' нашого клієнта
-  // Ми очікуємо, що у відповідь сервер поверне створений об'єкт Todo (вже з 'id')
   return client.post<Todo>('/todos', newTodo);
 };

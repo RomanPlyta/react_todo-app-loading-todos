@@ -2,18 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, deleteTodo, createTodo, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
+import { FilterType } from './types/FilterType';
 
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import { Notification } from './components/Notification';
 
-type FilterType = 'all' | 'active' | 'completed';
-
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState('');
   const [newTodoTitle, setNewTodoTitle] = useState('');
-  const [filter, setFilter] = useState<FilterType>('all');
+  const [filter, setFilter] = useState<FilterType>(FilterType.All);
   const [isLoading, setIsLoading] = useState(false);
   const newTodoField = useRef<HTMLInputElement>(null);
 
@@ -45,12 +44,12 @@ export const App: React.FC = () => {
   }, [error]);
 
   const handleFormSubmit = (event: React.FormEvent) => {
-    // Забороняємо стандартну поведінку браузера (перезавантаження сторінки)
+    // Забороняємо перезавантаження сторінки
     event.preventDefault();
 
     const normalizedTitle = newTodoTitle.trim();
 
-    // Валідація: не даємо створити завдання з порожнім заголовком
+    // Не даємо створити завдання з порожнім заголовком
     if (!normalizedTitle) {
       setError('Title should not be empty');
 
@@ -61,15 +60,13 @@ export const App: React.FC = () => {
 
     createTodo(normalizedTitle)
       .then(newTodoFromServer => {
-        // УСПІХ: сервер зберіг завдання і повернув його нам (вже з ID)
+        // Сервер зберіг завдання і повернув його нам (вже з ID)
         // Тепер ми можемо безпечно додати його до нашого локального стану
         setTodos(prevTodos => [...prevTodos, newTodoFromServer]);
 
-        // Очищаємо поле вводу
         setNewTodoTitle('');
       })
       .catch(() => {
-        // ПОМИЛКА: показуємо повідомлення
         setError('Unable to add a todo');
       })
       .finally(() => {
@@ -86,15 +83,14 @@ export const App: React.FC = () => {
   let filteredTodos = todos;
 
   switch (filter) {
-    case 'active':
+    case FilterType.Active:
       filteredTodos = todos.filter(todo => !todo.completed);
       break;
 
-    case 'completed':
+    case FilterType.Completed:
       filteredTodos = todos.filter(todo => todo.completed);
       break;
 
-    // 'all' - нічого не робимо, показуємо всі
     default:
       break;
   }

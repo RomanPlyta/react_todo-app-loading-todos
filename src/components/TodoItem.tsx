@@ -9,7 +9,6 @@ interface Props {
 
 export const TodoItem: React.FC<Props> = ({ todo }) => {
   return (
-    // Клас 'completed' додаємо динамічно, залежно від статусу todo
     <div data-cy="Todo" className={`todo ${todo.completed ? 'completed' : ''}`}>
       <label className="todo__status-label">
         <input
@@ -17,11 +16,9 @@ export const TodoItem: React.FC<Props> = ({ todo }) => {
           type="checkbox"
           className="todo__status"
           checked={todo.completed}
-          // Поки що тут не буде логіки зміни, додамо пізніше
         />
       </label>
 
-      {/* Показуємо назву завдання з отриманого об'єкта */}
       <span data-cy="TodoTitle" className="todo__title">
         {todo.title}
       </span>

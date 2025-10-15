@@ -1,6 +1,6 @@
 import React from 'react';
-
-type FilterType = 'all' | 'active' | 'completed';
+import cn from 'classnames';
+import { FilterType } from '../types/FilterType';
 
 interface Props {
   filter: FilterType;
@@ -24,30 +24,19 @@ export const Footer: React.FC<Props> = ({
       </span>
 
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={`filter__link ${filter === 'all' ? 'selected' : ''}`}
-          data-cy="FilterLinkAll"
-          onClick={() => onFilterChange('all')}
-        >
-          All
-        </a>
-        <a
-          href="#/active"
-          className={`filter__link ${filter === 'active' ? 'selected' : ''}`}
-          data-cy="FilterLinkActive"
-          onClick={() => onFilterChange('active')}
-        >
-          Active
-        </a>
-        <a
-          href="#/completed"
-          className={`filter__link ${filter === 'completed' ? 'selected' : ''}`}
-          data-cy="FilterLinkCompleted"
-          onClick={() => onFilterChange('completed')}
-        >
-          Completed
-        </a>
+        {Object.values(FilterType).map(filterOption => (
+          <a
+            key={filterOption}
+            href={filterOption === FilterType.All ? '#/' : `#/${filterOption}`}
+            className={cn('filter__link', {
+              selected: filter === filterOption,
+            })}
+            data-cy={`FilterLink${filterOption.charAt(0).toUpperCase() + filterOption.slice(1)}`}
+            onClick={() => onFilterChange(filterOption)}
+          >
+            {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)}
+          </a>
+        ))}
       </nav>
 
       {completedTodosCount > 0 && (
